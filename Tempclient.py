@@ -195,10 +195,9 @@ class AdminPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.configure(bg = "SkyBlue1")
-        label_title = tk.Label(self, text = "\nADMINISTRATOR \n", font='Arial 13 bold',fg ='#20639b',bg = "SkyBlue1").grid(row = 0,column = 2)
+        label_title = tk.Label(self, text = "\nADMIN \n", font ='Arial 13 bold',fg ='#20639b',bg = "SkyBlue1").grid(row = 0,column = 2)
         button_back = tk.Button(self, text = "LOG OUT",bg = "#20639b",fg ='floral white' ,command = lambda: controller.logout(self,client)).grid(row = 15,column = 2)
-        self.label_option=tk.Label(self,text ='OPTION\t',fg ='#20639b',bg = "SkyBlue1",font ='Arial 13 bold').grid(row = 1,column = 0)
-        self.label_notice = tk.Label(self, text = "", bg = "bisque2" )
+        self.label_notice = tk.Label(self, text = "", bg = "bisque2", fg ='red')
         self.label_notice.grid(row = 2,column = 1)
 
    
