@@ -4,6 +4,7 @@ from tkinter import ttk
 from tkinter import messagebox
 import threading
 from datetime import datetime
+import pickle
 
 HOST = "127.0.0.1"
 PORT = 65432

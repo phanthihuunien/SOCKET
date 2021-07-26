@@ -2,6 +2,10 @@ import socket
 import threading
 import pyodbc
 import sys
+from bs4 import BeautifulSoup
+import requests
+import json
+import pickle
 
 from tkinter import *
 import tkinter as tk
@@ -292,6 +296,40 @@ class HomePage(tk.Frame):
         self.data.delete(0, len(Active_Account))
         for i in range(len(Active_Account)):
             self.data.insert(i, Active_Account[i])
+
+    def Get_Data():
+        url = 'https://vi.wikipedia.org/wiki/B%E1%BA%A3n_m%E1%BA%ABu:D%E1%BB%AF_li%E1%BB%87u_%C4%91%E1%BA%A1i_d%E1%BB%8Bch_COVID-19/S%E1%BB%91_ca_nhi%E1%BB%85m_theo_t%E1%BB%89nh_th%C3%A0nh_t%E1%BA%A1i_Vi%E1%BB%87t_Nam#cite_note-1'
+
+        response = requests.get(url)
+
+        soup =  BeautifulSoup(response.text, 'html.parser')
+        
+        table = soup.find('tbody')
+        count = 1
+        res = []
+        for row in table.find_all('tr'):
+            i = 1
+            province, infected, treating, other, treated, death = '', '', '', '', '', ''
+            for cell in row.find_all('td'):
+                if i == 1:
+                    province = cell.text[0:(len(cell.text) - 1)]
+                elif i == 2:
+                    infected = cell.text[0:(len(cell.text) - 1)]
+                elif i == 3:
+                    treating = cell.text[0:(len(cell.text) - 1)]
+                elif i == 4:
+                    other = cell.text[0:(len(cell.text) - 1)]
+                elif i == 5:
+                    treated = cell.text[0:(len(cell.text) - 1)]
+                else:
+                    death = cell.text[0:(len(cell.text) - 1)]
+                i += 1
+            if count > 2 and count <= 65:
+                data = {'Province': province, 'Infected': infected, 'Treating': treating, 'Other': other, 'Treated': treated, 'Death': death}
+                res.append(data)
+            count += 1
+        with open('table.json', 'w', encoding= 'utf-8') as f:
+            json.dump(res, f, indent= 4, ensure_ascii= False)
     
 
 
