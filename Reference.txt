@@ -1,0 +1,2 @@
+https://freetuts.net/multiprocessing-trong-python-3502.html
+https://stackoverflow.com/questions/49005924/python-schedule-do-tasks-in-parallel/49008052

@@ -6,6 +6,11 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import pickle
+import os
+from datetime import datetime
+import schedule
+import multiprocessing
+import time
 
 from tkinter import *
 import tkinter as tk
@@ -297,13 +302,10 @@ class HomePage(tk.Frame):
         for i in range(len(Active_Account)):
             self.data.insert(i, Active_Account[i])
 
-    def Get_Data():
+    def Get_Json_File():
         url = 'https://vi.wikipedia.org/wiki/B%E1%BA%A3n_m%E1%BA%ABu:D%E1%BB%AF_li%E1%BB%87u_%C4%91%E1%BA%A1i_d%E1%BB%8Bch_COVID-19/S%E1%BB%91_ca_nhi%E1%BB%85m_theo_t%E1%BB%89nh_th%C3%A0nh_t%E1%BA%A1i_Vi%E1%BB%87t_Nam#cite_note-1'
-
         response = requests.get(url)
-
         soup =  BeautifulSoup(response.text, 'html.parser')
-        
         table = soup.find('tbody')
         count = 1
         res = []
@@ -328,10 +330,18 @@ class HomePage(tk.Frame):
                 data = {'Province': province, 'Infected': infected, 'Treating': treating, 'Other': other, 'Treated': treated, 'Death': death}
                 res.append(data)
             count += 1
-        with open('table.json', 'w', encoding= 'utf-8') as f:
+        date = datetime.now().strftime("%d-%m-%Y")
+        with open(date + '.json', 'w', encoding= 'utf-8') as f:
             json.dump(res, f, indent= 4, ensure_ascii= False)
-    
 
+def getProvinceData(date, province):
+    if (os.path.isfile(date + '.json')):
+        data = json.load(open(date + '.json', encoding= 'utf-8'))
+        for i in data:
+            if i["Province"] == province:
+                return i
+    else:
+        return {'Status': "Not available"}
 
 sThread = threading.Thread(target = runServer)
 sThread.daemon = True 

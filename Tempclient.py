@@ -140,7 +140,7 @@ class HomePage(tk.Frame):
         button_back = tk.Button(self, text ="Go back",bg = "#20639b",fg ='floral white', command = lambda: controller.logout(self,client))
         self.entry_search = tk.Entry(self)
         label_title.pack(pady = 10)
-  
+        
         button_back.configure(width = 10)
         self.entry_search.pack()
         self.label_notice = tk.Label(self, text = "", bg = "bisque2",fg ='red' )
