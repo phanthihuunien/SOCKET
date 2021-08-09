@@ -1,4 +1,5 @@
 import socket
+from test import run_schedule
 import threading
 import pyodbc
 import sys
@@ -209,39 +210,40 @@ def runServer():
         print("end")
 
 def Get_Json_File():
-        url = 'https://vi.wikipedia.org/wiki/B%E1%BA%A3n_m%E1%BA%ABu:D%E1%BB%AF_li%E1%BB%87u_%C4%91%E1%BA%A1i_d%E1%BB%8Bch_COVID-19/S%E1%BB%91_ca_nhi%E1%BB%85m_theo_t%E1%BB%89nh_th%C3%A0nh_t%E1%BA%A1i_Vi%E1%BB%87t_Nam#cite_note-1'
+    url = 'https://vi.wikipedia.org/wiki/B%E1%BA%A3n_m%E1%BA%ABu:D%E1%BB%AF_li%E1%BB%87u_%C4%91%E1%BA%A1i_d%E1%BB%8Bch_COVID-19/S%E1%BB%91_ca_nhi%E1%BB%85m_theo_t%E1%BB%89nh_th%C3%A0nh_t%E1%BA%A1i_Vi%E1%BB%87t_Nam#cite_note-1'
 
-        response = requests.get(url)
+    response = requests.get(url)
 
-        soup =  BeautifulSoup(response.text, 'html.parser')
+    soup =  BeautifulSoup(response.text, 'html.parser')
 
-        table = soup.find('tbody')
-        count = 1
-        res = []
-        for row in table.find_all('tr'):
-            i = 1
-            province, infected, treating, other, treated, death = '', '', '', '', '', ''
-            for cell in row.find_all('td'):
-                if i == 1:
-                    province = cell.text[0:(len(cell.text) - 1)]
-                elif i == 2:
-                    infected = cell.text[0:(len(cell.text) - 1)]
-                elif i == 3:
-                    treating = cell.text[0:(len(cell.text) - 1)]
-                elif i == 4:
-                    other = cell.text[0:(len(cell.text) - 1)]
-                elif i == 5:
-                    treated = cell.text[0:(len(cell.text) - 1)]
-                else:
-                    death = cell.text[0:(len(cell.text) - 1)]
-                i += 1
-            if count > 2 and count <= 65:
-                data = {'Province': province, 'Infected': infected, 'Treating': treating, 'Other': other, 'Treated': treated, 'Death': death}
-                res.append(data)
-            count += 1
-        date = datetime.now().strftime("%d-%m-%Y")
-        with open(date + '.json', 'w', encoding= 'utf-8') as f:
-            json.dump(res, f, indent= 4, ensure_ascii= False)
+    table = soup.find('tbody')
+    count = 1
+    res = []
+    for row in table.find_all('tr'):
+        i = 1
+        province, infected, treating, other, treated, death = '', '', '', '', '', ''
+        for cell in row.find_all('td'):
+            if i == 1:
+                province = cell.text[0:(len(cell.text) - 1)]
+            elif i == 2:
+                infected = cell.text[0:(len(cell.text) - 1)]
+            elif i == 3:
+                treating = cell.text[0:(len(cell.text) - 1)]
+            elif i == 4:
+                other = cell.text[0:(len(cell.text) - 1)]
+            elif i == 5:
+                treated = cell.text[0:(len(cell.text) - 1)]
+            else:
+                death = cell.text[0:(len(cell.text) - 1)]
+            i += 1
+        if count > 2 and count <= 65:
+            data = {'Province': province, 'Infected': infected, 'Treating': treating, 'Other': other, 'Treated': treated, 'Death': death}
+            res.append(data)
+        count += 1
+    date = datetime.now().strftime("%d-%m-%Y")
+    with open(date + '.json', 'w', encoding= 'utf-8') as f:
+        json.dump(res, f, indent= 4, ensure_ascii= False)
+    f.close()
 
 def getProvinceData(date, province):
     if (os.path.isfile(date + '.json')):
@@ -363,51 +365,75 @@ class HomePage(tk.Frame):
         for i in range(len(Active_Account)):
             self.data.insert(i, Active_Account[i])
             
-    def Get_Json_File():
-        url = 'https://vi.wikipedia.org/wiki/B%E1%BA%A3n_m%E1%BA%ABu:D%E1%BB%AF_li%E1%BB%87u_%C4%91%E1%BA%A1i_d%E1%BB%8Bch_COVID-19/S%E1%BB%91_ca_nhi%E1%BB%85m_theo_t%E1%BB%89nh_th%C3%A0nh_t%E1%BA%A1i_Vi%E1%BB%87t_Nam#cite_note-1'
-        response = requests.get(url)
-        soup =  BeautifulSoup(response.text, 'html.parser')
-        table = soup.find('tbody')
-        count = 1
-        res = []
-        for row in table.find_all('tr'):
-            i = 1
-            province, infected, treating, other, treated, death = '', '', '', '', '', ''
-            for cell in row.find_all('td'):
-                if i == 1:
-                    province = cell.text[0:(len(cell.text) - 1)]
-                elif i == 2:
-                    infected = cell.text[0:(len(cell.text) - 1)]
-                elif i == 3:
-                    treating = cell.text[0:(len(cell.text) - 1)]
-                elif i == 4:
-                    other = cell.text[0:(len(cell.text) - 1)]
-                elif i == 5:
-                    treated = cell.text[0:(len(cell.text) - 1)]
-                else:
-                    death = cell.text[0:(len(cell.text) - 1)]
-                i += 1
-            if count > 2 and count <= 65:
-                data = {'Province': province, 'Infected': infected, 'Treating': treating, 'Other': other, 'Treated': treated, 'Death': death}
-                res.append(data)
-            count += 1
-        date = datetime.now().strftime("%d-%m-%Y")
-        with open(date + '.json', 'w', encoding= 'utf-8') as f:
-            json.dump(res, f, indent= 4, ensure_ascii= False)
-        f.close()
+# def Get_Json_File():
+#     url = 'https://vi.wikipedia.org/wiki/B%E1%BA%A3n_m%E1%BA%ABu:D%E1%BB%AF_li%E1%BB%87u_%C4%91%E1%BA%A1i_d%E1%BB%8Bch_COVID-19/S%E1%BB%91_ca_nhi%E1%BB%85m_theo_t%E1%BB%89nh_th%C3%A0nh_t%E1%BA%A1i_Vi%E1%BB%87t_Nam#cite_note-1'
+#     response = requests.get(url)
+#     soup =  BeautifulSoup(response.text, 'html.parser')
+#     table = soup.find('tbody')
+#     count = 1
+#     res = []
+#     for row in table.find_all('tr'):
+#         i = 1
+#         province, infected, treating, other, treated, death = '', '', '', '', '', ''
+#         for cell in row.find_all('td'):
+#             if i == 1:
+#                 province = cell.text[0:(len(cell.text) - 1)]
+#             elif i == 2:
+#                 infected = cell.text[0:(len(cell.text) - 1)]
+#             elif i == 3:
+#                 treating = cell.text[0:(len(cell.text) - 1)]
+#             elif i == 4:
+#                 other = cell.text[0:(len(cell.text) - 1)]
+#             elif i == 5:
+#                 treated = cell.text[0:(len(cell.text) - 1)]
+#             else:
+#                 death = cell.text[0:(len(cell.text) - 1)]
+#             i += 1
+#         if count > 2 and count <= 65:
+#             data = {'Province': province, 'Infected': infected, 'Treating': treating, 'Other': other, 'Treated': treated, 'Death': death}
+#             res.append(data)
+#         count += 1
+#     date = datetime.now().strftime("%d-%m-%Y")
+#     with open(date + '.json', 'w', encoding= 'utf-8') as f:
+#         json.dump(res, f, indent= 4, ensure_ascii= False)
+#     f.close()
 
-def getProvinceData(date, province):
-    if (os.path.isfile(date + '.json')):
-        data = json.load(open(date + '.json', encoding= 'utf-8'))
-        for i in data:
-            if i["Province"] == province:
-                return i
-    else:
-        return {'Status': "Not available"}
+# def getProvinceData(date, province):
+    # if (os.path.isfile(date + '.json')):
+    #     data = json.load(open(date + '.json', encoding= 'utf-8'))
+    #     check = False
+    #     for i in data:
+    #         if i["Province"] == province:
+    #             check = True
+    #             return i
+    #     if check == False:
+    #         return {'Status': "Province does not exist"}
+    # else:
+    #     return {'Status': "Not available"}
 
-sThread = threading.Thread(target = runServer)
-sThread.daemon = True 
-sThread.start()
+def run_schedule():
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
-app = CovidAdmin()
-app.mainloop()
+def GetJsonFile_Sche():
+    schedule.every(1).hours.do(Get_Json_File)
+    run_schedule()
+
+def serverMain():
+    sThread = threading.Thread(target = runServer)
+    sThread.daemon = True 
+    sThread.start()
+
+    app = CovidAdmin()
+    app.mainloop()
+
+if __name__ == "__main__":
+    p1 = multiprocessing.Process(target= GetJsonFile_Sche)
+    p2 = multiprocessing.Process(target= serverMain)
+
+    p1.start()
+    p2.start()
+
+    p1.join()
+    p2.join()
