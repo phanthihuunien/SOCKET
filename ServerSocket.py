@@ -1,5 +1,5 @@
 import socket
-from test import run_schedule
+# from test import run_schedule
 import threading
 import pyodbc
 import sys
@@ -20,31 +20,27 @@ from tkinter import messagebox
 from tkinter import ttk
 import json
 
-PORT = 65432
-HOSTNAME="DESKTOP-OMT3G09"
-HOST = "127.0.0.1"
-HEADER = 64
+PORT = 6000
+HOSTNAME=socket.gethostname()#"DESKTOP-OMT3G09"
+HOST_IP = "127.0.0.1"#socket.gethostbyname(HOSTNAME)
 FORMAT = "utf8"
-DISCONNECT = "x"
 
-#define sever name and database name
 SEVER_NAME = HOSTNAME +'\SQLEXPRESS'
 DATABASE_NAME='SOCKET'
 FORMAT = "utf8"
 
-#option
 SIGNUP = "signup"
 LOGIN = "login"
 LOGOUT = "logout"
 SEARCH = "search"
-
+CONNECT="connect"
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((HOST, PORT))
+s.bind((HOST_IP, PORT))
 s.listen(1)
-LARGE_FONT = ("Arial", 15,"bold")
+FONT = ("Arial", 15,"bold")
 
 def ConnectToDataBase():
-    cnxn = pyodbc.connect(driver='{SQL Server}', host='DESKTOP-OMT3GO9\SQLEXPRESS', database='SOCKET',trusted_connection='yes')
+    cnxn = pyodbc.connect(driver='{SQL Server}', host=HOSTNAME+'\SQLEXPRESS', database='SOCKET',trusted_connection='yes')
     cursor = cnxn.cursor()
     return cursor
 #https://docs.microsoft.com/vi-vn/sql/connect/python/pyodbc/step-3-proof-of-concept-connecting-to-sql-using-pyodbc?view=sql-server-2016
@@ -72,32 +68,26 @@ def checkClientSignUp(username):
     return True
 
 def clientSignUp(sck, addr):
-
     user = sck.recv(1024).decode(FORMAT)
-    print("username:--" + user + "--")
-
+    print("username:" + user)
     sck.sendall(user.encode(FORMAT))
-
     password = sck.recv(1024).decode(FORMAT)
-    print("password:--" + password + "--")
-
+    print("password:" + password)
     accepted = checkClientSignUp(user)
     print("accept:", accepted)
     sck.sendall(str(accepted).encode(FORMAT))
-
     if accepted:
         InsertNewAccount(user, password)
         Ad.append(str(addr))
         ID.append(user)
-        account = str(Ad[Ad.__len__() - 1]) + "-" + str(ID[ID.__len__() - 1])
+        account = str(Ad[Ad.__len__() - 1]) + "_" + str(ID[ID.__len__() - 1])
         Active_Account.append(account)
 
     print("End_LogIn()")
-    print("")
 
 def Check_Active_Account(username):
     for row in Active_Account:
-        parse = row.find("-")
+        parse = row.find("_")
         parseCheck = row[(parse+1):]
         if parseCheck == username:
             return False
@@ -105,10 +95,10 @@ def Check_Active_Account(username):
 
 def Remove_Active_Account(connect, addr):
     for row in Active_Account:
-        parse = row.find("-")
+        parse = row.find("_")
         parse_check = row[:parse]
         if parse_check == str(addr):
-            parse= row.find("-")
+            parse= row.find("_")
             Ad.remove(parse_check)
             username = row[(parse + 1):]
             ID.remove(username)
@@ -120,7 +110,6 @@ def check_clientLogIn(username, password):
     cursor.execute("select T.TenDangNhap from TaiKhoan T")
     if Check_Active_Account(username) == False:
         return 0
-    # check if admin logged in
     if username == "admin" and password == "123":
         return 1
     
@@ -141,36 +130,46 @@ def check_clientLogIn(username, password):
 
 def clientLogIn(sck):
     user = sck.recv(1024).decode(FORMAT)
-    print("username:--" + user +"--")
+    print("username:" + user)
 
     sck.sendall(user.encode(FORMAT))
     password = sck.recv(1024).decode(FORMAT)
-    print("password:--" + password + "--")
+    print("password:" + password)
     
     accepted = check_clientLogIn(user, password)
     if accepted == 1:
         ID.append(user)
-        account = str(Ad[Ad.__len__() - 1]) + "-" + str(ID[ID.__len__() - 1])
+        account = str(Ad[Ad.__len__() - 1]) + "_" + str(ID[ID.__len__() - 1])
         Active_Account.append(account)
     
-    print("accept:", accepted)
+    print("Accept:", accepted)
     sck.sendall(str(accepted).encode(FORMAT))
-    print("end-logIn()")
+    print("End-LogIn()")
     print("")
+
+def UpdateData():
+    start = time.time()
+    while True:
+        if ((time.time() - start) > 1800):
+            Get_Json_File()
+            start = time.time()
 
 
 def clientSearch(sck):
     Get_Json_File()
     province = sck.recv(1024).decode(FORMAT)
-    print("Province:--" + province +"--")
+    print("Province:" + province)
     sck.sendall(province.encode(FORMAT))
     date = sck.recv(1024).decode(FORMAT)
-    print("Date:--" + date + "--")
+    print("Date:" + date)
     provinceCheck =   getProvinceData(date, province)
     provinceCheck = json.dumps(provinceCheck.__dict__, ensure_ascii=False)
     sck.sendall(provinceCheck.encode(FORMAT))
-    print("end-search()")
-    print("")
+    print("End-Search()")
+
+# def clientConnect(sck):
+#     accepted = "ok"
+#     sck.sendall(accepted.encode(FORMAT))
 
 def handle_client(connect, addr):
     while True:
@@ -184,7 +183,8 @@ def handle_client(connect, addr):
             Remove_Active_Account(connect, addr)
         elif option == SEARCH:
             clientSearch(connect)
-
+        # elif option == CONNECT:
+        #     clientConnect(connect)
     Remove_Active_Account(connect, addr)
     connect.close()
     print("end-thread")
@@ -192,22 +192,26 @@ def handle_client(connect, addr):
 
 def runServer():
     try:
-        print(HOST)
+        print(HOST_IP)
         print("Waiting for Client")
 
+        Update = threading.Thread(target= UpdateData)
+        Update.daemon = True
+        Update.start()
+
         while True:
-            print("enter while loop")
+            print("Loading...")
             connect, addr = s.accept()
             clientThread = threading.Thread(target = handle_client, args = (connect, addr))
             clientThread.daemon = True 
             clientThread.start()
-            print("end main-loop")
+            print("End Main-loop")
     except KeyboardInterrupt:
-        print("error")
+        print("Error")
         s.close()
     finally:
         s.close()
-        print("end")
+        print("End")
 
 def Get_Json_File():
     url = 'https://vi.wikipedia.org/wiki/B%E1%BA%A3n_m%E1%BA%ABu:D%E1%BB%AF_li%E1%BB%87u_%C4%91%E1%BA%A1i_d%E1%BB%8Bch_COVID-19/S%E1%BB%91_ca_nhi%E1%BB%85m_theo_t%E1%BB%89nh_th%C3%A0nh_t%E1%BA%A1i_Vi%E1%BB%87t_Nam#cite_note-1'
@@ -278,13 +282,10 @@ class CovidAdmin(tk.Tk):
         self.frames = {}
         for F in (StartPage,HomePage):
             frame = F(container, self)
-
             self.frames[F] = frame 
-
             frame.grid(row = 0, column = 0, sticky = "nsew")
 
         self.showFrame(StartPage)
-
 
     def showFrame(self, container):
         frame = self.frames[container]
@@ -294,10 +295,11 @@ class CovidAdmin(tk.Tk):
             self.geometry("500x300")
         frame.tkraise()
 
-    # close-programe function
+    
     def on_closing(self):
         if messagebox.askokcancel("Quit!", "Do you wanna quit?"):
             self.destroy()
+        s.close()
 
     def logIn(self,curFrame):
 
@@ -320,7 +322,7 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.configure(bg = "SkyBlue1")
         
-        label_title = tk.Label(self, text="\nLOG IN FOR SERVER\n", font = LARGE_FONT, fg ='Black',bg = "SkyBlue1").grid(row = 0,column = 1)
+        label_title = tk.Label(self, text="\nSERVER LOGIN\n", font = FONT, fg ='Black',bg = "SkyBlue1").grid(row = 0,column = 1)
         label_user = tk.Label(self, text="\tUSERNAME ",fg='#20639b',bg="deep sky blue",font='Arial 10 bold').grid(row = 1,column = 0)
         label_pswd = tk.Label(self, text="\tPASSWORD ",fg='#20639b',bg="deep sky blue",font='Arial 10 bold').grid(row = 2,column = 0)
 
@@ -340,7 +342,7 @@ class HomePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent) 
         self.configure(bg = "SkyBlue1")
-        label_title = tk.Label(self, text ="\n ACTIVE ACCOUNT ON SERVER\n", font = LARGE_FONT,fg = '#20639b',bg = "SkyBlue1").pack()
+        label_title = tk.Label(self, text ="\n ACTIVE ACCOUNT\n", font = FONT,fg = '#20639b',bg = "SkyBlue1").pack()
         
         self.conent =tk.Frame(self)
         self.data = tk.Listbox(self.conent, height = 10, width = 40, bg ='floral white',activestyle = 'dotbox', font = "Arial",fg ='#20639b')
@@ -365,75 +367,12 @@ class HomePage(tk.Frame):
         for i in range(len(Active_Account)):
             self.data.insert(i, Active_Account[i])
             
-# def Get_Json_File():
-#     url = 'https://vi.wikipedia.org/wiki/B%E1%BA%A3n_m%E1%BA%ABu:D%E1%BB%AF_li%E1%BB%87u_%C4%91%E1%BA%A1i_d%E1%BB%8Bch_COVID-19/S%E1%BB%91_ca_nhi%E1%BB%85m_theo_t%E1%BB%89nh_th%C3%A0nh_t%E1%BA%A1i_Vi%E1%BB%87t_Nam#cite_note-1'
-#     response = requests.get(url)
-#     soup =  BeautifulSoup(response.text, 'html.parser')
-#     table = soup.find('tbody')
-#     count = 1
-#     res = []
-#     for row in table.find_all('tr'):
-#         i = 1
-#         province, infected, treating, other, treated, death = '', '', '', '', '', ''
-#         for cell in row.find_all('td'):
-#             if i == 1:
-#                 province = cell.text[0:(len(cell.text) - 1)]
-#             elif i == 2:
-#                 infected = cell.text[0:(len(cell.text) - 1)]
-#             elif i == 3:
-#                 treating = cell.text[0:(len(cell.text) - 1)]
-#             elif i == 4:
-#                 other = cell.text[0:(len(cell.text) - 1)]
-#             elif i == 5:
-#                 treated = cell.text[0:(len(cell.text) - 1)]
-#             else:
-#                 death = cell.text[0:(len(cell.text) - 1)]
-#             i += 1
-#         if count > 2 and count <= 65:
-#             data = {'Province': province, 'Infected': infected, 'Treating': treating, 'Other': other, 'Treated': treated, 'Death': death}
-#             res.append(data)
-#         count += 1
-#     date = datetime.now().strftime("%d-%m-%Y")
-#     with open(date + '.json', 'w', encoding= 'utf-8') as f:
-#         json.dump(res, f, indent= 4, ensure_ascii= False)
-#     f.close()
 
-# def getProvinceData(date, province):
-    # if (os.path.isfile(date + '.json')):
-    #     data = json.load(open(date + '.json', encoding= 'utf-8'))
-    #     check = False
-    #     for i in data:
-    #         if i["Province"] == province:
-    #             check = True
-    #             return i
-    #     if check == False:
-    #         return {'Status': "Province does not exist"}
-    # else:
-    #     return {'Status': "Not available"}
 
-def run_schedule():
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+sThread = threading.Thread(target = runServer)
+sThread.daemon = True 
+sThread.start()
 
-def GetJsonFile_Sche():
-    schedule.every(1).hours.do(Get_Json_File)
-    run_schedule()
+app = CovidAdmin()
+app.mainloop()
 
-def serverMain():
-    sThread = threading.Thread(target = runServer)
-    sThread.daemon = True 
-    sThread.start()
-
-    app = CovidAdmin()
-    app.mainloop()
-
-if __name__ == "__main__":
-    p1 = multiprocessing.Process(target= GetJsonFile_Sche)
-    p2 = multiprocessing.Process(target= serverMain)
-
-    p1.start()
-    p2.start()
-
-    p1.join()
-    p2.join()

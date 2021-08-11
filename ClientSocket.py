@@ -1,3 +1,4 @@
+# from _typeshed import Self
 import socket
 import tkinter as tk 
 from tkinter import ttk 
@@ -6,22 +7,21 @@ import threading
 from datetime import datetime
 import json
 
-HOST = "127.0.0.1"
-PORT = 65432
-HEADER = 64
+HOST_IP = "127.0.0.1"
+PORT = 6000
 FORMAT = "utf8"
-DISCONNECT = "x"
 
-LARGE_FONT = ("Arial", 15,"bold")
+FONT = ("Arial", 15,"bold")
 
-#option
 SIGNUP = "signup"
 LOGIN = "login"
 LOGOUT = "logout"
 SEARCH = "search"
+GETIP ="getip"
+CONNECT="connect"
 ADMIN_USERNAME = 'admin'
 ADMIN_PSWD = '123'
-#GUI intialize
+
 class Covid19App(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
@@ -33,7 +33,7 @@ class Covid19App(tk.Tk):
         container.grid_rowconfigure(0, weight = 1)
         container.grid_columnconfigure(0, weight = 1)
         self.frames = {}
-        for F in (StartPage, HomePage,AdminPage):
+        for F in (StartPage, HomePage):
             frame = F(container, self)
             self.frames[F] = frame 
             frame.grid(row = 0, column = 0, sticky = "nsew")
@@ -43,13 +43,14 @@ class Covid19App(tk.Tk):
         frame = self.frames[container]
         if container == HomePage:
             self.geometry("1200x600")
-        elif container == AdminPage:
-            self.geometry("500x600")
+        # elif container == IPGET:
+        #     self.geometry("500x300")
         else:
             self.geometry("500x300")
         frame.tkraise()
 
     def on_closing(self):
+        
         if messagebox.askokcancel("Quit", "Do you wanna quit?"):
             self.destroy()
             try:
@@ -62,26 +63,21 @@ class Covid19App(tk.Tk):
         try:
             user = curFrame.entry_user.get()
             pswd = curFrame.entry_pswd.get()
-
             if user == "" or pswd == "":
                 curFrame.label_notice["text"] = "Fields cannot be empty"
                 return 
             option = LOGIN
             sck.sendall(option.encode(FORMAT))
             sck.sendall(user.encode(FORMAT))
-            print("input:", user)
+            print("Input:", user)
             sck.recv(1024)
             print("s responded")
             sck.sendall(pswd.encode(FORMAT))
-            print("input:", pswd)
-            # if login is accepted
+            print("Input:", pswd)
             accepted = sck.recv(1024).decode(FORMAT)
-            print("accepted: "+ accepted)
+            print("Accepted: "+ accepted)
             if accepted == "1":
-                if user =="admin":
-                    self.showFrame(AdminPage)
-                else:
-                   self.showFrame(HomePage)
+                self.showFrame(HomePage)
                 curFrame.label_notice["text"] = ""
             elif accepted == "2":
                 curFrame.label_notice["text"] = "Invalid username or password"
@@ -101,14 +97,12 @@ class Covid19App(tk.Tk):
                 return 
             option = SIGNUP
             sck.sendall(option.encode(FORMAT))
-            #send username and password to server
             sck.sendall(user.encode(FORMAT))
             print("Input:", user)
             sck.recv(1024)
             print("Socket responded")
             sck.sendall(pswd.encode(FORMAT))
             print("Input:", pswd)
-            # if login is accepted
             accepted = sck.recv(1024).decode(FORMAT)
             print("Accepted: " + accepted)
             if accepted == "True":
@@ -133,9 +127,8 @@ class Covid19App(tk.Tk):
 
 
     def searchProvince(self, curFrame, sck):
-       
         try:
-            print("test " + curFrame.label_notice["text"])
+            print(curFrame.label_notice["text"])
             curFrame.label_notice["text"] = ""
             province = curFrame.entry_search_province.get()    
             datee = curFrame.entry_search_day.get()
@@ -163,7 +156,6 @@ class Covid19App(tk.Tk):
             print("input:", datee)
             response = sck.recv(1024).decode(FORMAT)
             covidProvinceResult = json.loads(response)
-           
 
             if (covidProvinceResult["status"] == "province 404"):
                 print("no Province")
@@ -179,18 +171,56 @@ class Covid19App(tk.Tk):
             
             curFrame.frame_detail.pack()
         except:
-            curFrame.label_notice["text"] = "Error"
+            curFrame.label_notice["text"] = "Error:Server is not responding"
 
+    
+
+    # def connectToServer(self,curFrame,sck):
+    #     IP =curFrame.entry_IP.get()
+    #     server_address = (IP, PORT)
+    #     sck.connect(server_address)
+    #     try:
+    #         option = CONNECT
+    #         sck.sendall(option.encode(FORMAT))
+    #         accepted = "not"
+    #         accepted = sck.recv(1024).decode(FORMAT)
+    #         print("Accepted ")
+    #         if accepted == "ok":
+    #             self.showFrame(StartPage)
+    #             curFrame.label_notice["text"] = ""
+    #     except:
+    #         curFrame.label_notice["text"] = "Error: Server is not responding"
+    #         print("Error: Server is not responding")
+# class IPGET(tk.Frame):
+#     def __init__(self, parent, controller):
+#         tk.Frame.__init__(self, parent)
+#         self.configure(bg = "SkyBlue1")
+#         label_title = tk.Label(self, text ="CHOOSE IP\n", font = FONT,fg='Black',bg="SkyBlue1")
+#         label_title.pack()
+#         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#         button_connect = tk.Button(self, text ="CONNECT TO SERVER",bg = "#20639b",fg ='floral white', command =lambda: controller.connectToServer(self,client))
+       
+#         button_connect.configure(width=25)
+#         self.entry_IP = tk.Entry(self,width = 35,bg = 'light yellow')
+#         label_IP = tk.Label(self, text="ip ",fg = '#20639b', bg = "SkyBlue1", font = 'Arial 10 ')
+#         self.label_notice = tk.Label(self,text = "", bg = "bisque2", fg ='red')
+#         label_IP.pack()
+#         self.entry_IP.pack()
+#         self.label_notice.pack()
+#         button_connect.pack()
+#         global HOST_IP
+#         HOST_IP = self.entry_IP.get()
+    
 class HomePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.configure(bg = "SkyBlue1")
-        label_title = tk.Label(self, text ="HOME PAGE\n", font = LARGE_FONT,fg='Black',bg="SkyBlue1")
+        label_title = tk.Label(self, text ="COVID19 INFORMATION\n", font = FONT,fg='Black',bg="SkyBlue1")
        
         label_title.pack()
-       
         
-        button_back = tk.Button(self, text ="Go back",bg = "#20639b",fg ='floral white', command = lambda: controller.logout(self,client))
+    
+        button_back = tk.Button(self, text ="BACK",bg = "#20639b",fg ='floral white', command = lambda: controller.logout(self,client))
        
         button_back.configure(width=15)
         
@@ -200,7 +230,7 @@ class HomePage(tk.Frame):
       
         label_province = tk.Label(self, text="province ",fg = '#20639b', bg = "SkyBlue1", font = 'Arial 10 ')
         label_day = tk.Label(self, text="date ",fg = '#20639b', bg = "SkyBlue1", font = 'Arial 10 ')
-        button_search = tk.Button(self, text="Search following province",bg="#20639b",fg='floral white', command=lambda: controller.searchProvince(self,client))
+        button_search = tk.Button(self, text="SEARCH",bg="#20639b",fg='floral white', command=lambda: controller.searchProvince(self,client))
         button_search.configure(width = 20)
         
         self.label_notice = tk.Label(self,text = "", bg = "bisque2", fg ='red')
@@ -215,7 +245,7 @@ class HomePage(tk.Frame):
         
         self.frame_detail = tk.Frame(self, bg="steelblue1")
         
-        self.label_name_province = tk.Label(self.frame_detail,bg="floral white", text="", font=LARGE_FONT)
+        self.label_name_province = tk.Label(self.frame_detail,bg="floral white", text="", font=FONT)
 
         self.tree_detail = ttk.Treeview(self.frame_detail)
         self.tree_detail["column"] = ("Province", "Infected", "Treating", "Other","Treated","Death")
@@ -246,14 +276,14 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.configure(bg="SkyBlue1")
-        label_title = tk.Label(self, text = "LOG IN",font = LARGE_FONT, fg = 'Black', bg = "SkyBlue1")
+        label_title = tk.Label(self, text = "USER LOGIN",font = FONT, fg = 'Black', bg = "SkyBlue1")
         label_user = tk.Label(self, text="username ",fg = '#20639b', bg = "SkyBlue1", font = 'Arial 10 ')
         label_pswd = tk.Label(self, text="password ",fg = '#20639b', bg = "SkyBlue1", font = 'Arial 10 ')
 
         self.label_notice = tk.Label(self,text = "", bg = "bisque2", fg ='red')
         self.entry_user = tk.Entry(self,width = 20, bg = 'light yellow')
         self.entry_pswd = tk.Entry(self,width = 20, bg = 'light yellow')
-
+        
         button_log = tk.Button(self,text = "LOG IN", bg = "#20639b", fg = 'floral white', command = lambda: controller.logIn(self, client)) 
         button_log.configure(width = 10)
         button_sign = tk.Button(self,text = "SIGN UP", bg = "#20639b", fg = 'floral white', command = lambda: controller.signUp(self, client)) 
@@ -267,25 +297,16 @@ class StartPage(tk.Frame):
         button_log.pack()
         button_sign.pack()
 
-
-class AdminPage(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.configure(bg = "SkyBlue1")
-        label_title = tk.Label(self, text = "\nADMINISTRATOR \n", font='Arial 13 bold',fg ='#20639b',bg = "SkyBlue1").grid(row = 0,column = 2)
-        button_back = tk.Button(self, text = "LOG OUT",bg = "#20639b",fg ='floral white' ,command = lambda: controller.logout(self,client)).grid(row = 15,column = 2)
-        self.label_option=tk.Label(self,text ='OPTION\t',fg ='#20639b',bg = "SkyBlue1",font ='Arial 13 bold').grid(row = 1,column = 0)
-        self.label_notice = tk.Label(self, text = "", bg = "bisque2" )
-        self.label_notice.grid(row = 2,column = 1)
    
-#socket initialize
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_address = (HOST, PORT)
+
+server_address = (HOST_IP, PORT)
 client.connect(server_address)
 app = Covid19App()
 
 try:
     app.mainloop()
+    
 except:
     print("Error: Server is not responding")
     client.close()
