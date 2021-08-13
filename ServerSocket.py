@@ -44,7 +44,7 @@ def ConnectToDataBase():
     cursor = cnxn.cursor()
     return cursor
 #https://docs.microsoft.com/vi-vn/sql/connect/python/pyodbc/step-3-proof-of-concept-connecting-to-sql-using-pyodbc?view=sql-server-2016
-def InsertNewAccount(user,password):
+def InsertNewAccount(user,password): #insert new account into database when signing up
     cursor = ConnectToDataBase()
     cursor.execute( "insert into TaiKhoan(TenDangNhap,MatKhau) values(?,?);",(user, password))
     cursor.commit()
@@ -53,10 +53,8 @@ Active_Account = []
 ID = []
 Ad = []
 
-def checkClientSignUp(username):
-    if username == "admin":
-        return False
-    cursor = ConnectToDataBase()
+def checkClientSignUp(username):#check already exist or not
+    cursor = ConnectToDataBase() 
     cursor.execute("select TenDangNhap from TaiKhoan")
     for row in cursor:
         parse = str(row) 
@@ -68,16 +66,16 @@ def checkClientSignUp(username):
     return True
 
 def clientSignUp(sck, addr):
-    user = sck.recv(1024).decode(FORMAT)
+    user = sck.recv(1024).decode(FORMAT)#receive username from client
     print("username:" + user)
-    sck.sendall(user.encode(FORMAT))
-    password = sck.recv(1024).decode(FORMAT)
+    sck.sendall(user.encode(FORMAT))#send respond
+    password = sck.recv(1024).decode(FORMAT)#receive password from client
     print("password:" + password)
-    accepted = checkClientSignUp(user)
+    accepted = checkClientSignUp(user)#validate username  
     print("accept:", accepted)
-    sck.sendall(str(accepted).encode(FORMAT))
+    sck.sendall(str(accepted).encode(FORMAT))#send respond to client that account be accepted or not
     if accepted:
-        InsertNewAccount(user, password)
+        InsertNewAccount(user, password)#insert new acount to database
         Ad.append(str(addr))
         ID.append(user)
         account = str(Ad[Ad.__len__() - 1]) + "_" + str(ID[ID.__len__() - 1])
@@ -85,7 +83,7 @@ def clientSignUp(sck, addr):
 
     print("End_LogIn()")
 
-def Check_Active_Account(username):
+def Check_Active_Account(username): #kiem tra co dang hoat dong khong khi co mot client khac log in vao
     for row in Active_Account:
         parse = row.find("_")
         parseCheck = row[(parse+1):]
@@ -93,7 +91,7 @@ def Check_Active_Account(username):
             return False
     return True
 
-def Remove_Active_Account(connect, addr):
+def Remove_Active_Account(connect, addr): #remove account khoi nhung tk dang hoat dong khi log out.
     for row in Active_Account:
         parse = row.find("_")
         parse_check = row[:parse]
@@ -105,14 +103,11 @@ def Remove_Active_Account(connect, addr):
             Active_Account.remove(row)
             connect.sendall("True".encode(FORMAT))
 
-def check_clientLogIn(username, password):
+def check_clientLogIn(username, password):#kiem tra thong tin log in voi database
     cursor = ConnectToDataBase()
     cursor.execute("select T.TenDangNhap from TaiKhoan T")
     if Check_Active_Account(username) == False:
-        return 0
-    if username == "admin" and password == "123":
-        return 1
-    
+        return 0 #khi tai khoan dang hoat dong, khong the dang nhap cung 1 tai khoan nhieu noi
     for row in cursor:
         parse = str(row)
         parseCheck = parse[2:]
@@ -125,25 +120,25 @@ def check_clientLogIn(username, password):
             parse = parseCheck.find("'")
             parseCheck = parseCheck[:parse]
             if password == parseCheck:
-                return 1
-    return 2
+                return 1#dang nhap ok
+    return 2#sai mk hoac pass
 
 def clientLogIn(sck):
-    user = sck.recv(1024).decode(FORMAT)
+    user = sck.recv(1024).decode(FORMAT) #nhan username tu client
     print("username:" + user)
 
-    sck.sendall(user.encode(FORMAT))
-    password = sck.recv(1024).decode(FORMAT)
+    sck.sendall(user.encode(FORMAT))#phan hoi sau khi nhan username
+    password = sck.recv(1024).decode(FORMAT)#nhan pass tu client
     print("password:" + password)
     
-    accepted = check_clientLogIn(user, password)
+    accepted = check_clientLogIn(user, password)#kiem tra mk, pass ok hay k
     if accepted == 1:
         ID.append(user)
         account = str(Ad[Ad.__len__() - 1]) + "_" + str(ID[ID.__len__() - 1])
-        Active_Account.append(account)
+        Active_Account.append(account) #them vao list nhung tai khoan dang hoat dong
     
     print("Accept:", accepted)
-    sck.sendall(str(accepted).encode(FORMAT))
+    sck.sendall(str(accepted).encode(FORMAT))#gui thong tin accept hay khong qua client
     print("End-LogIn()")
     print("")
 
@@ -155,12 +150,12 @@ def UpdateData():
             start = time.time()
 
 
-def clientSearch(sck):
-    Get_Json_File()
-    province = sck.recv(1024).decode(FORMAT)
+def clientSearch(sck):#request tim kiem infor từ client
+    Get_Json_File()#get file từ web
+    province = sck.recv(1024).decode(FORMAT)#nhan ten tinh tu client
     print("Province:" + province)
-    sck.sendall(province.encode(FORMAT))
-    date = sck.recv(1024).decode(FORMAT)
+    sck.sendall(province.encode(FORMAT))#phan hoi
+    date = sck.recv(1024).decode(FORMAT)#nhan ngay muon tim
     print("Date:" + date)
     provinceCheck =   getProvinceData(date, province)
     provinceCheck = json.dumps(provinceCheck.__dict__, ensure_ascii=False)
@@ -195,7 +190,7 @@ def runServer():
         print(HOST_IP)
         print("Waiting for Client")
 
-        Update = threading.Thread(target= UpdateData)
+        Update = threading.Thread(target= UpdateData)#update data trong khi dang run
         Update.daemon = True
         Update.start()
 

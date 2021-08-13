@@ -61,20 +61,20 @@ class Covid19App(tk.Tk):
 
     def logIn(self,curFrame,sck):
         try:
-            user = curFrame.entry_user.get()
+            user = curFrame.entry_user.get() 
             pswd = curFrame.entry_pswd.get()
             if user == "" or pswd == "":
                 curFrame.label_notice["text"] = "Fields cannot be empty"
                 return 
             option = LOGIN
-            sck.sendall(option.encode(FORMAT))
-            sck.sendall(user.encode(FORMAT))
+            sck.sendall(option.encode(FORMAT))#gui option log in qua server
+            sck.sendall(user.encode(FORMAT))#gui username
             print("Input:", user)
-            sck.recv(1024)
+            sck.recv(1024)#nhan phan hoi tu server
             print("s responded")
-            sck.sendall(pswd.encode(FORMAT))
+            sck.sendall(pswd.encode(FORMAT))#gui pass
             print("Input:", pswd)
-            accepted = sck.recv(1024).decode(FORMAT)
+            accepted = sck.recv(1024).decode(FORMAT)#nhan thong tin duoc accept log in hay k
             print("Accepted: "+ accepted)
             if accepted == "1":
                 self.showFrame(HomePage)
@@ -96,14 +96,14 @@ class Covid19App(tk.Tk):
                 curFrame.label_notice["text"] = "Password cannot be empty"
                 return 
             option = SIGNUP
-            sck.sendall(option.encode(FORMAT))
-            sck.sendall(user.encode(FORMAT))
+            sck.sendall(option.encode(FORMAT))#gui option muon sign up qua server
+            sck.sendall(user.encode(FORMAT))#gui username muon sign up
             print("Input:", user)
-            sck.recv(1024)
+            sck.recv(1024)#nhan phan hoi 
             print("Socket responded")
-            sck.sendall(pswd.encode(FORMAT))
+            sck.sendall(pswd.encode(FORMAT))#gui pass
             print("Input:", pswd)
-            accepted = sck.recv(1024).decode(FORMAT)
+            accepted = sck.recv(1024).decode(FORMAT)#check server accept tao tk hay k
             print("Accepted: " + accepted)
             if accepted == "True":
                 self.showFrame(HomePage)
@@ -118,8 +118,8 @@ class Covid19App(tk.Tk):
     def logout(self,curFrame, sck):
         try:
             option = LOGOUT
-            sck.sendall(option.encode(FORMAT))
-            accepted = sck.recv(1024).decode(FORMAT)
+            sck.sendall(option.encode(FORMAT))#gui option logout 
+            accepted = sck.recv(1024).decode(FORMAT)#check coi server ok k
             if accepted == "True":
                 self.showFrame(StartPage)
         except:
@@ -131,40 +131,40 @@ class Covid19App(tk.Tk):
             print(curFrame.label_notice["text"])
             curFrame.label_notice["text"] = ""
             province = curFrame.entry_search_province.get()    
-            datee = curFrame.entry_search_day.get()
+            date = curFrame.entry_search_day.get()
            
             formt = '%d-%m-%Y'
             try:
-                check = bool(datetime.strptime(datee, formt))
+                check = bool(datetime.strptime(date, formt))#validate ngay thang nhap vo
             except ValueError:
                 check = False
             if  check == False: 
                 curFrame.label_notice["text"] = "Date is not valid (format must be dd-mm-yyyy)"
                 return
-            if province == "" or datee =="":
+            if province == "" or date =="":
                 curFrame.label_notice["text"] = "Fields cannot be empty"
                 return
 
             option = SEARCH
-            sck.sendall(option.encode(FORMAT))
+            sck.sendall(option.encode(FORMAT))#gui option tim kiem thong tin toi server
 
-            sck.sendall(province.encode(FORMAT))
+            sck.sendall(province.encode(FORMAT))#gui ten tinh muon tim
             print("input:", province)
-            sck.recv(1024)
+            sck.recv(1024)#nhan phan hoi
             print("socket responded")
-            sck.sendall(datee.encode(FORMAT))
-            print("input:", datee)
-            response = sck.recv(1024).decode(FORMAT)
-            covidProvinceResult = json.loads(response)
+            sck.sendall(date.encode(FORMAT))#gui ngay muon tim
+            print("input:", date)
+            response = sck.recv(1024).decode(FORMAT)#nhan thong tin server gui
+            covidProvinceResult = json.loads(response)#load object vua nhan
 
-            if (covidProvinceResult["status"] == "province 404"):
+            if (covidProvinceResult["status"] == "province 404"):#khong co tinh do trong danh sach hoac do nhap sai
                 print("no Province")
                 curFrame.label_notice["text"] = "This province doesn't exist"
                 return
               
             x = curFrame.tree_detail.get_children()
             for item in x:
-                curFrame.tree_detail.delete(item)
+                curFrame.tree_detail.delete(item)#de xoa thong tin cu vi du như khi nhap tinh khac thi no chi hien tinh moi nhap va xoa tinh da tim truoc do
             curFrame.tree_detail.insert('', 'end', text="1", values=(covidProvinceResult["body"]["Province"], covidProvinceResult["body"]["Infected"],
              covidProvinceResult["body"]["Treating"],covidProvinceResult["body"]["Other"], covidProvinceResult["body"]["Treated"],covidProvinceResult["body"]["Death"]))
             
@@ -297,7 +297,7 @@ class StartPage(tk.Frame):
         button_log.pack()
         button_sign.pack()
 
-   
+   #tao socket
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 server_address = (HOST_IP, PORT)
