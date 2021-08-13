@@ -48,7 +48,7 @@ Active_Account = []
 ID = []
 Ad = []
 
-def checkClientSignUp(username):
+def CheckClientSignUp(username):
     if username == "admin":
         return False
     cursor = ConnectToDataBase()
@@ -62,13 +62,13 @@ def checkClientSignUp(username):
             return False
     return True
 
-def clientSignUp(sck, addr):
+def ClientSignUp(sck, addr):
     user = sck.recv(1024).decode(FORMAT)
     print("username:" + user)
     sck.sendall(user.encode(FORMAT))
     password = sck.recv(1024).decode(FORMAT)
     print("password:" + password)
-    accepted = checkClientSignUp(user)
+    accepted = CheckClientSignUp(user)
     print("accept:", accepted)
     sck.sendall(str(accepted).encode(FORMAT))
     if accepted:
@@ -100,7 +100,7 @@ def Remove_Active_Account(connect, addr):
             Active_Account.remove(row)
             connect.sendall("True".encode(FORMAT))
 
-def check_clientLogIn(username, password):
+def CheckClientLogIn(username, password):
     cursor = ConnectToDataBase()
     cursor.execute("select T.TenDangNhap from TaiKhoan T")
     if Check_Active_Account(username) == False:
@@ -123,7 +123,7 @@ def check_clientLogIn(username, password):
                 return 1
     return 2
 
-def clientLogIn(sck):
+def ClientLogIn(sck):
     user = sck.recv(1024).decode(FORMAT)
     print("username:" + user)
 
@@ -131,7 +131,7 @@ def clientLogIn(sck):
     password = sck.recv(1024).decode(FORMAT)
     print("password:" + password)
     
-    accepted = check_clientLogIn(user, password)
+    accepted = CheckClientLogIn(user, password)
     if accepted == 1:
         ID.append(user)
         account = str(Ad[Ad.__len__() - 1]) + "_" + str(ID[ID.__len__() - 1])
@@ -142,22 +142,14 @@ def clientLogIn(sck):
     print("End-LogIn()")
     print("")
 
-def UpdateData():
-    start = time.time()
-    while True:
-        if ((time.time() - start) > 1800):
-            Get_Json_File()
-            start = time.time()
-
-
-def clientSearch(sck):
+def ClientSearch(sck):
     Get_Json_File()
     province = sck.recv(1024).decode(FORMAT)
     print("Province:" + province)
     sck.sendall(province.encode(FORMAT))
     date = sck.recv(1024).decode(FORMAT)
     print("Date:" + date)
-    provinceCheck =   getProvinceData(date, province)
+    provinceCheck =   GetProvinceData(date, province)
     provinceCheck = json.dumps(provinceCheck.__dict__, ensure_ascii=False)
     sck.sendall(provinceCheck.encode(FORMAT))
     print("End-Search()")
@@ -171,13 +163,13 @@ def handle_client(connect, addr):
         option = connect.recv(1024).decode(FORMAT)
         if option == LOGIN:
             Ad.append(str(addr))
-            clientLogIn(connect)
+            ClientLogIn(connect)
         elif option == SIGNUP:
-            clientSignUp(connect, addr)
+            ClientSignUp(connect, addr)
         elif option == LOGOUT:
             Remove_Active_Account(connect, addr)
         elif option == SEARCH:
-            clientSearch(connect)
+            ClientSearch(connect)
         # elif option == CONNECT:
         #     clientConnect(connect)
     Remove_Active_Account(connect, addr)
@@ -185,7 +177,7 @@ def handle_client(connect, addr):
     print("end-thread")
 
 
-def runServer():
+def RunServer():
     try:
         print(HOST_IP)
         print("Waiting for Client")
@@ -244,7 +236,14 @@ def Get_Json_File():
         json.dump(res, f, indent= 4, ensure_ascii= False)
     f.close()
 
-def getProvinceData(date, province):
+def UpdateData():
+    start = time.time()
+    while True:
+        if ((time.time() - start) > 1800):
+            Get_Json_File()
+            start = time.time()
+
+def GetProvinceData(date, province):
     if (os.path.isfile(date + '.json')):
         data = json.load(open(date + '.json', encoding= 'utf-8'))
         for i in data:
@@ -289,7 +288,6 @@ class CovidAdmin(tk.Tk):
         else:
             self.geometry("500x300")
         frame.tkraise()
-
     
     def on_closing(self):
         if messagebox.askokcancel("Quit!", "Do you wanna quit?"):
@@ -364,7 +362,7 @@ class HomePage(tk.Frame):
             
 
 
-sThread = threading.Thread(target = runServer)
+sThread = threading.Thread(target = RunServer)
 sThread.daemon = True 
 sThread.start()
 

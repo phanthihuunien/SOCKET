@@ -3,7 +3,6 @@ import socket
 import tkinter as tk 
 from tkinter import ttk 
 from tkinter import messagebox
-import threading
 from datetime import datetime
 import json
 
@@ -125,7 +124,6 @@ class Covid19App(tk.Tk):
         except:
             curFrame.label_notice["text"] = "Error: Server is not responding"
 
-
     def searchProvince(self, curFrame, sck):
         try:
             print(curFrame.label_notice["text"])
@@ -173,24 +171,22 @@ class Covid19App(tk.Tk):
         except:
             curFrame.label_notice["text"] = "Error:Server is not responding"
 
-    
-
-    # def connectToServer(self,curFrame,sck):
-    #     IP =curFrame.entry_IP.get()
-    #     server_address = (IP, PORT)
-    #     sck.connect(server_address)
-    #     try:
-    #         option = CONNECT
-    #         sck.sendall(option.encode(FORMAT))
-    #         accepted = "not"
-    #         accepted = sck.recv(1024).decode(FORMAT)
-    #         print("Accepted ")
-    #         if accepted == "ok":
-    #             self.showFrame(StartPage)
-    #             curFrame.label_notice["text"] = ""
-    #     except:
-    #         curFrame.label_notice["text"] = "Error: Server is not responding"
-    #         print("Error: Server is not responding")
+# def connectToServer(self,curFrame,sck):
+#     IP =curFrame.entry_IP.get()
+#     server_address = (IP, PORT)
+#     sck.connect(server_address)
+#     try:
+#         option = CONNECT
+#         sck.sendall(option.encode(FORMAT))
+#         accepted = "not"
+#         accepted = sck.recv(1024).decode(FORMAT)
+#         print("Accepted ")
+#         if accepted == "ok":
+#             self.showFrame(StartPage)
+#             curFrame.label_notice["text"] = ""
+#     except:
+#         curFrame.label_notice["text"] = "Error: Server is not responding"
+#         print("Error: Server is not responding")
 # class IPGET(tk.Frame):
 #     def __init__(self, parent, controller):
 #         tk.Frame.__init__(self, parent)
@@ -198,8 +194,7 @@ class Covid19App(tk.Tk):
 #         label_title = tk.Label(self, text ="CHOOSE IP\n", font = FONT,fg='Black',bg="SkyBlue1")
 #         label_title.pack()
 #         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#         button_connect = tk.Button(self, text ="CONNECT TO SERVER",bg = "#20639b",fg ='floral white', command =lambda: controller.connectToServer(self,client))
-       
+#         button_connect = tk.Button(self, text ="CONNECT TO SERVER",bg = "#20639b",fg ='floral white', command =lambda: controller.connectToServer(self,client))      
 #         button_connect.configure(width=25)
 #         self.entry_IP = tk.Entry(self,width = 35,bg = 'light yellow')
 #         label_IP = tk.Label(self, text="ip ",fg = '#20639b', bg = "SkyBlue1", font = 'Arial 10 ')
