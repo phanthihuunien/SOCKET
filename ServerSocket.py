@@ -1,18 +1,13 @@
 import socket
-# from test import run_schedule
 import threading
 import pyodbc
-import sys
 import os
 from datetime import datetime
-import schedule
-import multiprocessing
 import time
 
 from bs4 import BeautifulSoup
 import requests
 import json
-import pickle
 from tkinter import *
 import tkinter as tk
 from tkinter.ttk import *
