@@ -1,18 +1,13 @@
 import socket
-# from test import run_schedule
 import threading
 import pyodbc
-import sys
 import os
 from datetime import datetime
-import schedule
-import multiprocessing
 import time
 
 from bs4 import BeautifulSoup
 import requests
 import json
-import pickle
 from tkinter import *
 import tkinter as tk
 from tkinter.ttk import *
@@ -53,8 +48,9 @@ Active_Account = []
 ID = []
 Ad = []
 
-def checkClientSignUp(username):#check already exist or not
-    cursor = ConnectToDataBase() 
+
+def CheckClientSignUp(username):
+    cursor = ConnectToDataBase()
     cursor.execute("select TenDangNhap from TaiKhoan")
     for row in cursor:
         parse = str(row) 
@@ -65,13 +61,16 @@ def checkClientSignUp(username):#check already exist or not
             return False
     return True
 
+
 def clientSignUp(sck, addr):
     user = sck.recv(1024).decode(FORMAT)#receive username from client
     print("username:" + user)
     sck.sendall(user.encode(FORMAT))#send respond
     password = sck.recv(1024).decode(FORMAT)#receive password from client
     print("password:" + password)
-    accepted = checkClientSignUp(user)#validate username  
+
+    accepted = CheckClientSignUp(user)#validate username  
+
     print("accept:", accepted)
     sck.sendall(str(accepted).encode(FORMAT))#send respond to client that account be accepted or not
     if accepted:
@@ -103,6 +102,7 @@ def Remove_Active_Account(connect, addr): #remove account khoi nhung tk dang hoa
             Active_Account.remove(row)
             connect.sendall("True".encode(FORMAT))
 
+
 def check_clientLogIn(username, password):#kiem tra thong tin log in voi database
     cursor = ConnectToDataBase()
     cursor.execute("select T.TenDangNhap from TaiKhoan T")
@@ -123,6 +123,7 @@ def check_clientLogIn(username, password):#kiem tra thong tin log in voi databas
                 return 1#dang nhap ok
     return 2#sai mk hoac pass
 
+
 def clientLogIn(sck):
     user = sck.recv(1024).decode(FORMAT) #nhan username tu client
     print("username:" + user)
@@ -142,6 +143,7 @@ def clientLogIn(sck):
     print("End-LogIn()")
     print("")
 
+
 def UpdateData():
     start = time.time()
     while True:
@@ -157,7 +159,7 @@ def clientSearch(sck):#request tim kiem infor từ client
     sck.sendall(province.encode(FORMAT))#phan hoi
     date = sck.recv(1024).decode(FORMAT)#nhan ngay muon tim
     print("Date:" + date)
-    provinceCheck =   getProvinceData(date, province)
+    provinceCheck =   GetProvinceData(date, province)
     provinceCheck = json.dumps(provinceCheck.__dict__, ensure_ascii=False)
     sck.sendall(provinceCheck.encode(FORMAT))
     print("End-Search()")
@@ -185,7 +187,7 @@ def handle_client(connect, addr):
     print("end-thread")
 
 
-def runServer():
+def RunServer():
     try:
         print(HOST_IP)
         print("Waiting for Client")
@@ -244,7 +246,14 @@ def Get_Json_File():
         json.dump(res, f, indent= 4, ensure_ascii= False)
     f.close()
 
-def getProvinceData(date, province):
+def UpdateData():
+    start = time.time()
+    while True:
+        if ((time.time() - start) > 1800):
+            Get_Json_File()
+            start = time.time()
+
+def GetProvinceData(date, province):
     if (os.path.isfile(date + '.json')):
         data = json.load(open(date + '.json', encoding= 'utf-8'))
         for i in data:
@@ -289,7 +298,6 @@ class CovidAdmin(tk.Tk):
         else:
             self.geometry("500x300")
         frame.tkraise()
-
     
     def on_closing(self):
         if messagebox.askokcancel("Quit!", "Do you wanna quit?"):
@@ -364,7 +372,7 @@ class HomePage(tk.Frame):
             
 
 
-sThread = threading.Thread(target = runServer)
+sThread = threading.Thread(target = RunServer)
 sThread.daemon = True 
 sThread.start()
 
