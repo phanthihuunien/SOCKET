@@ -246,13 +246,6 @@ def Get_Json_File():
         json.dump(res, f, indent= 4, ensure_ascii= False)
     f.close()
 
-def UpdateData():
-    start = time.time()
-    while True:
-        if ((time.time() - start) > 1800):
-            Get_Json_File()
-            start = time.time()
-
 def GetProvinceData(date, province):
     if (os.path.isfile(date + '.json')):
         data = json.load(open(date + '.json', encoding= 'utf-8'))
@@ -264,9 +257,9 @@ def GetProvinceData(date, province):
         return Response("file 404", {})
 
 class Response:
-  def __init__(self, status, body):
-    self.status = status
-    self.body = body
+    def __init__(self, status, body):
+        self.status = status
+        self.body = body
 
 # defind GUI-app class
 class CovidAdmin(tk.Tk):
