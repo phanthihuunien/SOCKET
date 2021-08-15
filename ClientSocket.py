@@ -158,6 +158,17 @@ class Covid19App(tk.Tk):
             if (covidProvinceResult["status"] == "province 404"):#khong co tinh do trong danh sach hoac do nhap sai
                 print("no Province")
                 curFrame.label_notice["text"] = "This province doesn't exist"
+                x = curFrame.tree_detail.get_children()
+                for item in x:
+                    curFrame.tree_detail.delete(item)#de xoa thong tin cu vi du như khi nhap tinh khac thi no chi hien tinh moi nhap va xoa tinh da tim truoc do
+                return
+
+            if (covidProvinceResult["status"] == "file 404"):#data khong ton tai
+                print("no Data")
+                x = curFrame.tree_detail.get_children()
+                for item in x:
+                    curFrame.tree_detail.delete(item)#de xoa thong tin cu vi du như khi nhap tinh khac thi no chi hien tinh moi nhap va xoa tinh da tim truoc do
+                curFrame.label_notice["text"] = "Data doesn't exist"
                 return
               
             x = curFrame.tree_detail.get_children()
