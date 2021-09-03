@@ -143,15 +143,6 @@ def clientLogIn(sck):
     print("End-LogIn()")
     print("")
 
-
-def UpdateData():
-    start = time.time()
-    while True:
-        if ((time.time() - start) > 1800):
-            Get_Json_File()
-            start = time.time()
-
-
 def clientSearch(sck):#request tim kiem infor từ client
     #Get_Json_File()
     province = sck.recv(1024).decode(FORMAT)#nhan ten tinh tu client
@@ -256,18 +247,29 @@ def UpdateData():
 
 def GetProvinceData(date, province):
     if (os.path.isfile(date + '.json')):
-        data = json.load(open(date + '.json', encoding= 'utf-8'))
+        f = open(date + '.json', encoding= 'utf-8')
+        data = json.load(f)
         for i in data:
             if i["Province"] == province:
+                f.close()
                 return Response("200", i)
+        f.close()
         return Response("province 404", {})
     else:
         return Response("file 404", {})
 
+def UpdateData():
+    Get_Json_File()
+    start = time.time()
+    while True:
+        if ((time.time() - start) > 1800):
+            Get_Json_File()
+            start = time.time()
+
 class Response:
-  def __init__(self, status, body):
-    self.status = status
-    self.body = body
+    def __init__(self, status, body):
+        self.status = status
+        self.body = body
 
 # defind GUI-app class
 class CovidAdmin(tk.Tk):
