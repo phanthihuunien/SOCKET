@@ -18,7 +18,7 @@ import json
 PORT = 6000
 HOSTNAME=socket.gethostname()#"DESKTOP-OMT3G09"
 HOST_IP = "127.0.0.1"#socket.gethostbyname(HOSTNAME)
-FORMAT = "utf8"
+
 
 SEVER_NAME = HOSTNAME +'\SQLEXPRESS'
 DATABASE_NAME='SOCKET'
@@ -153,7 +153,7 @@ def UpdateData():
 
 
 def clientSearch(sck):#request tim kiem infor từ client
-    Get_Json_File()#get file từ web
+    #Get_Json_File()
     province = sck.recv(1024).decode(FORMAT)#nhan ten tinh tu client
     print("Province:" + province)
     sck.sendall(province.encode(FORMAT))#phan hoi
@@ -184,7 +184,7 @@ def handle_client(connect, addr):
         #     clientConnect(connect)
     Remove_Active_Account(connect, addr)
     connect.close()
-    print("end-thread")
+    print("End-thread")
 
 
 def RunServer():
@@ -202,7 +202,7 @@ def RunServer():
             clientThread = threading.Thread(target = handle_client, args = (connect, addr))
             clientThread.daemon = True 
             clientThread.start()
-            print("End Main-loop")
+            print("End Process")
     except KeyboardInterrupt:
         print("Error")
         s.close()
@@ -247,6 +247,7 @@ def Get_Json_File():
     f.close()
 
 def UpdateData():
+    Get_Json_File()
     start = time.time()
     while True:
         if ((time.time() - start) > 1800):
@@ -345,7 +346,7 @@ class HomePage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent) 
         self.configure(bg = "SkyBlue1")
-        label_title = tk.Label(self, text ="\n ACTIVE ACCOUNT\n", font = FONT,fg = '#20639b',bg = "SkyBlue1").pack()
+        label_title = tk.Label(self, text ="\n ACTIVE ACCOUNT\n", font = FONT,fg = 'black',bg = "SkyBlue1").pack()
         
         self.conent =tk.Frame(self)
         self.data = tk.Listbox(self.conent, height = 10, width = 40, bg ='floral white',activestyle = 'dotbox', font = "Arial",fg ='#20639b')
@@ -372,9 +373,9 @@ class HomePage(tk.Frame):
             
 
 
-sThread = threading.Thread(target = RunServer)
-sThread.daemon = True 
-sThread.start()
+Thread = threading.Thread(target = RunServer)
+Thread.daemon = True 
+Thread.start()
 
 app = CovidAdmin()
 app.mainloop()

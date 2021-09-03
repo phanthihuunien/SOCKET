@@ -1,4 +1,3 @@
-# from _typeshed import Self
 import socket
 import tkinter as tk 
 from tkinter import ttk 
@@ -57,7 +56,7 @@ class Covid19App(tk.Tk):
                 client.sendall(option.encode(FORMAT))
             except:
                 pass
-
+        client.close()
     def logIn(self,curFrame,sck):
         try:
             user = curFrame.entry_user.get() 
@@ -130,7 +129,12 @@ class Covid19App(tk.Tk):
             curFrame.label_notice["text"] = ""
             province = curFrame.entry_search_province.get()    
             date = curFrame.entry_search_day.get()
-           
+            if province == "" or date =="":
+                curFrame.label_notice["text"] = "Fields cannot be empty"
+                x = curFrame.tree_detail.get_children()
+                for item in x:
+                   curFrame.tree_detail.delete(item)
+                return
             formt = '%d-%m-%Y'
             try:
                 check = bool(datetime.strptime(date, formt))#validate ngay thang nhap vo
@@ -138,10 +142,11 @@ class Covid19App(tk.Tk):
                 check = False
             if  check == False: 
                 curFrame.label_notice["text"] = "Date is not valid (format must be dd-mm-yyyy)"
+                x = curFrame.tree_detail.get_children()
+                for item in x:
+                   curFrame.tree_detail.delete(item)
                 return
-            if province == "" or date =="":
-                curFrame.label_notice["text"] = "Fields cannot be empty"
-                return
+            
 
             option = SEARCH
             sck.sendall(option.encode(FORMAT))#gui option tim kiem thong tin toi server
@@ -156,13 +161,26 @@ class Covid19App(tk.Tk):
             covidProvinceResult = json.loads(response)#load object vua nhan
 
             if (covidProvinceResult["status"] == "province 404"):#khong co tinh do trong danh sach hoac do nhap sai
-                print("no Province")
+                print("Province 404")
                 curFrame.label_notice["text"] = "This province doesn't exist"
+                x = curFrame.tree_detail.get_children()
+                for item in x:
+                   curFrame.tree_detail.delete(item)
                 return
-              
+            if (covidProvinceResult["status"] == "file 404"):#khong co file du lieu cua ngay đó hoặc ngay o tuong lai
+                print("File 404")
+                x = curFrame.tree_detail.get_children()
+                for item in x:
+                    curFrame.tree_detail.delete(item)
+                curFrame.label_notice["text"] = "NOT FOUND!"
+                return
             x = curFrame.tree_detail.get_children()
             for item in x:
                 curFrame.tree_detail.delete(item)#de xoa thong tin cu vi du như khi nhap tinh khac thi no chi hien tinh moi nhap va xoa tinh da tim truoc do
+            print("Province             Infected                Treating                Other              Treated           Death")
+            
+            print(covidProvinceResult["body"]["Province"],"          ",covidProvinceResult["body"]["Infected"],"              ",covidProvinceResult["body"]["Treating"],
+            "                ",covidProvinceResult["body"]["Other"],"                  ",covidProvinceResult["body"]["Treated"],"          ",covidProvinceResult["body"]["Death"])
             curFrame.tree_detail.insert('', 'end', text="1", values=(covidProvinceResult["body"]["Province"], covidProvinceResult["body"]["Infected"],
              covidProvinceResult["body"]["Treating"],covidProvinceResult["body"]["Other"], covidProvinceResult["body"]["Treated"],covidProvinceResult["body"]["Death"]))
             
