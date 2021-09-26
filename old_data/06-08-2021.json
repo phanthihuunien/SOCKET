@@ -1,0 +1,506 @@
+[
+    {
+        "Province": "TP. Hồ Chí Minh",
+        "Infected": "114.086",
+        "Treating": "77.718",
+        "Other": "1",
+        "Treated": "34.283",
+        "Death": "1.974"
+    },
+    {
+        "Province": "Bình Dương",
+        "Infected": "24.855",
+        "Treating": "19.678",
+        "Other": "0",
+        "Treated": "3.936",
+        "Death": "241"
+    },
+    {
+        "Province": "Long An",
+        "Infected": "8.457",
+        "Treating": "8.183",
+        "Other": "0",
+        "Treated": "187",
+        "Death": "87"
+    },
+    {
+        "Province": "Đồng Nai",
+        "Infected": "6.632",
+        "Treating": "5.514",
+        "Other": "0",
+        "Treated": "1.072",
+        "Death": "46"
+    },
+    {
+        "Province": "Bắc Giang",
+        "Infected": "5.964",
+        "Treating": "303",
+        "Other": "0",
+        "Treated": "5.649",
+        "Death": "12"
+    },
+    {
+        "Province": "Đồng Tháp",
+        "Infected": "3.692",
+        "Treating": "3.547",
+        "Other": "1",
+        "Treated": "63",
+        "Death": "81"
+    },
+    {
+        "Province": "Khánh Hòa",
+        "Infected": "3.202",
+        "Treating": "3.043",
+        "Other": "0",
+        "Treated": "134",
+        "Death": "25"
+    },
+    {
+        "Province": "Tiền Giang",
+        "Infected": "2.988",
+        "Treating": "2.825",
+        "Other": "1",
+        "Treated": "57",
+        "Death": "75"
+    },
+    {
+        "Province": "Tây Ninh",
+        "Infected": "2.320",
+        "Treating": "2.254",
+        "Other": "0",
+        "Treated": "65",
+        "Death": "1"
+    },
+    {
+        "Province": "Hà Nội",
+        "Infected": "2.080",
+        "Treating": "1.359",
+        "Other": "2",
+        "Treated": "724",
+        "Death": "25"
+    },
+    {
+        "Province": "Bà Rịa - Vũng Tàu",
+        "Infected": "1.998",
+        "Treating": "1.868",
+        "Other": "0",
+        "Treated": "128",
+        "Death": "2"
+    },
+    {
+        "Province": "Đà Nẵng",
+        "Infected": "1.853",
+        "Treating": "1.146",
+        "Other": "3",
+        "Treated": "663",
+        "Death": "41"
+    },
+    {
+        "Province": "Bắc Ninh",
+        "Infected": "1.763",
+        "Treating": "142",
+        "Other": "0",
+        "Treated": "1.608",
+        "Death": "13"
+    },
+    {
+        "Province": "Phú Yên",
+        "Infected": "1.616",
+        "Treating": "986",
+        "Other": "0",
+        "Treated": "625",
+        "Death": "5"
+    },
+    {
+        "Province": "Cần Thơ",
+        "Infected": "1.463",
+        "Treating": "1.418",
+        "Other": "0",
+        "Treated": "35",
+        "Death": "10"
+    },
+    {
+        "Province": "Vĩnh Long",
+        "Infected": "1.220",
+        "Treating": "1.164",
+        "Other": "0",
+        "Treated": "39",
+        "Death": "17"
+    },
+    {
+        "Province": "Bình Thuận",
+        "Infected": "1.003",
+        "Treating": "989",
+        "Other": "0",
+        "Treated": "11",
+        "Death": "3"
+    },
+    {
+        "Province": "Bến Tre",
+        "Infected": "995",
+        "Treating": "954",
+        "Other": "0",
+        "Treated": "20",
+        "Death": "21"
+    },
+    {
+        "Province": "Hải Dương",
+        "Infected": "876",
+        "Treating": "58",
+        "Other": "0",
+        "Treated": "818",
+        "Death": "0"
+    },
+    {
+        "Province": "An Giang",
+        "Infected": "530",
+        "Treating": "505",
+        "Other": "0",
+        "Treated": "21",
+        "Death": "4"
+    },
+    {
+        "Province": "Trà Vinh",
+        "Infected": "472",
+        "Treating": "460",
+        "Other": "0",
+        "Treated": "10",
+        "Death": "2"
+    },
+    {
+        "Province": "Kiên Giang",
+        "Infected": "468",
+        "Treating": "400",
+        "Other": "0",
+        "Treated": "66",
+        "Death": "2"
+    },
+    {
+        "Province": "Quảng Ngãi",
+        "Infected": "344",
+        "Treating": "301",
+        "Other": "0",
+        "Treated": "43",
+        "Death": "0"
+    },
+    {
+        "Province": "Đắk Lắk",
+        "Infected": "334",
+        "Treating": "327",
+        "Other": "0",
+        "Treated": "7",
+        "Death": "0"
+    },
+    {
+        "Province": "Ninh Thuận",
+        "Infected": "322",
+        "Treating": "308",
+        "Other": "0",
+        "Treated": "12",
+        "Death": "2"
+    },
+    {
+        "Province": "Quảng Nam",
+        "Infected": "309",
+        "Treating": "181",
+        "Other": "0",
+        "Treated": "124",
+        "Death": "4"
+    },
+    {
+        "Province": "Sóc Trăng",
+        "Infected": "301",
+        "Treating": "280",
+        "Other": "0",
+        "Treated": "19",
+        "Death": "2"
+    },
+    {
+        "Province": "Bình Định",
+        "Infected": "313",
+        "Treating": "248",
+        "Other": "0",
+        "Treated": "65",
+        "Death": "0"
+    },
+    {
+        "Province": "Hưng Yên",
+        "Infected": "300",
+        "Treating": "224",
+        "Other": "0",
+        "Treated": "76",
+        "Death": "0"
+    },
+    {
+        "Province": "Hậu Giang",
+        "Infected": "258",
+        "Treating": "248",
+        "Other": "0",
+        "Treated": "10",
+        "Death": "0"
+    },
+    {
+        "Province": "Bình Phước",
+        "Infected": "257",
+        "Treating": "253",
+        "Other": "0",
+        "Treated": "4",
+        "Death": "0"
+    },
+    {
+        "Province": "Nghệ An",
+        "Infected": "257",
+        "Treating": "171",
+        "Other": "0",
+        "Treated": "85",
+        "Death": "1"
+    },
+    {
+        "Province": "Vĩnh Phúc",
+        "Infected": "251",
+        "Treating": "136",
+        "Other": "0",
+        "Treated": "114",
+        "Death": "1"
+    },
+    {
+        "Province": "Hà Tĩnh",
+        "Infected": "207",
+        "Treating": "105",
+        "Other": "0",
+        "Treated": "101",
+        "Death": "1"
+    },
+    {
+        "Province": "Gia Lai",
+        "Infected": "182",
+        "Treating": "151",
+        "Other": "0",
+        "Treated": "31",
+        "Death": "0"
+    },
+    {
+        "Province": "Lạng Sơn",
+        "Infected": "140",
+        "Treating": "40",
+        "Other": "0",
+        "Treated": "99",
+        "Death": "1"
+    },
+    {
+        "Province": "Thanh Hóa",
+        "Infected": "135",
+        "Treating": "106",
+        "Other": "0",
+        "Treated": "29",
+        "Death": "0"
+    },
+    {
+        "Province": "Đắk Nông",
+        "Infected": "118",
+        "Treating": "117",
+        "Other": "0",
+        "Treated": "1",
+        "Death": "0"
+    },
+    {
+        "Province": "Quảng Ninh",
+        "Infected": "104",
+        "Treating": "14",
+        "Other": "0",
+        "Treated": "90",
+        "Death": "0"
+    },
+    {
+        "Province": "Bạc Liêu",
+        "Infected": "103",
+        "Treating": "51",
+        "Other": "0",
+        "Treated": "52",
+        "Death": "0"
+    },
+    {
+        "Province": "Thừa Thiên – Huế",
+        "Infected": "101",
+        "Treating": "94",
+        "Other": "0",
+        "Treated": "7",
+        "Death": "0"
+    },
+    {
+        "Province": "Thái Bình",
+        "Infected": "86",
+        "Treating": "23",
+        "Other": "0",
+        "Treated": "63",
+        "Death": "0"
+    },
+    {
+        "Province": "Ninh Bình",
+        "Infected": "81",
+        "Treating": "34",
+        "Other": "0",
+        "Treated": "47",
+        "Death": "0"
+    },
+    {
+        "Province": "Hà Nam",
+        "Infected": "73",
+        "Treating": "19",
+        "Other": "0",
+        "Treated": "54",
+        "Death": "0"
+    },
+    {
+        "Province": "Điện Biên",
+        "Infected": "63",
+        "Treating": "2",
+        "Other": "0",
+        "Treated": "61",
+        "Death": "0"
+    },
+    {
+        "Province": "Lâm Đồng",
+        "Infected": "59",
+        "Treating": "57",
+        "Other": "0",
+        "Treated": "2",
+        "Death": "0"
+    },
+    {
+        "Province": "Hòa Bình",
+        "Infected": "44",
+        "Treating": "11",
+        "Other": "0",
+        "Treated": "33",
+        "Death": "0"
+    },
+    {
+        "Province": "Cà Mau",
+        "Infected": "40",
+        "Treating": "32",
+        "Other": "0",
+        "Treated": "8",
+        "Death": "0"
+    },
+    {
+        "Province": "Hải Phòng",
+        "Infected": "38",
+        "Treating": "26",
+        "Other": "0",
+        "Treated": "12",
+        "Death": "0"
+    },
+    {
+        "Province": "Quảng Trị",
+        "Infected": "36",
+        "Treating": "23",
+        "Other": "0",
+        "Treated": "12",
+        "Death": "1"
+    },
+    {
+        "Province": "Nam Định",
+        "Infected": "33",
+        "Treating": "7",
+        "Other": "0",
+        "Treated": "26",
+        "Death": "0"
+    },
+    {
+        "Province": "Quảng Bình",
+        "Infected": "29",
+        "Treating": "29",
+        "Other": "0",
+        "Treated": "0",
+        "Death": "0"
+    },
+    {
+        "Province": "Lào Cai",
+        "Infected": "28",
+        "Treating": "27",
+        "Other": "0",
+        "Treated": "1",
+        "Death": "0"
+    },
+    {
+        "Province": "Sơn La",
+        "Infected": "24",
+        "Treating": "23",
+        "Other": "0",
+        "Treated": "1",
+        "Death": "0"
+    },
+    {
+        "Province": "Thái Nguyên",
+        "Infected": "23",
+        "Treating": "13",
+        "Other": "0",
+        "Treated": "10",
+        "Death": "0"
+    },
+    {
+        "Province": "Hà Giang",
+        "Infected": "21",
+        "Treating": "17",
+        "Other": "0",
+        "Treated": "4",
+        "Death": "0"
+    },
+    {
+        "Province": "Kon Tum",
+        "Infected": "20",
+        "Treating": "20",
+        "Other": "0",
+        "Treated": "0",
+        "Death": "0"
+    },
+    {
+        "Province": "Phú Thọ",
+        "Infected": "15",
+        "Treating": "8",
+        "Other": "0",
+        "Treated": "7",
+        "Death": "0"
+    },
+    {
+        "Province": "Yên Bái",
+        "Infected": "7",
+        "Treating": "2",
+        "Other": "0",
+        "Treated": "5",
+        "Death": "0"
+    },
+    {
+        "Province": "Bắc Kạn",
+        "Infected": "6",
+        "Treating": "6",
+        "Other": "0",
+        "Treated": "0",
+        "Death": "0"
+    },
+    {
+        "Province": "Lai Châu",
+        "Infected": "2",
+        "Treating": "1",
+        "Other": "0",
+        "Treated": "1",
+        "Death": "0"
+    },
+    {
+        "Province": "Tuyên Quang",
+        "Infected": "2",
+        "Treating": "1",
+        "Other": "0",
+        "Treated": "1",
+        "Death": "0"
+    },
+    {
+        "Province": "Cao Bằng",
+        "Infected": "0",
+        "Treating": "0",
+        "Other": "0",
+        "Treated": "0",
+        "Death": "0"
+    }
+]
